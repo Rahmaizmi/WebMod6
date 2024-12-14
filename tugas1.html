@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Pemesanan</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: black;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: goldenrod;
+      }
+
+      .container {
+        width: 80%;
+        margin: 30px auto;
+        background-color: goldenrod;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      td {
+        padding: 10px;
+        vertical-align: middle;
+      }
+
+      td label {
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .error {
+        color: darkred;
+        font-size: 0.9em;
+        display: none;
+        margin-top: 5px;
+      }
+
+      button[name="save"],
+      button[name="cancel"] {
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button[name="save"] {
+        background-color: #2c78fc;
+        color: white;
+      }
+
+      button[name="cancel"] {
+        background-color: orangered;
+        color: white;
+      }
+
+      button[name="save"]:hover {
+        background-color: #1a5bb8;
+      }
+
+      button[name="cancel"]:hover {
+        background-color: #dba807;
+      }
+
+      td[colspan="2"] {
+        text-align: center;
+        padding-top: 20px;
+      }
+
+      .resume {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .resume h2 {
+        text-align: center;
+        color: goldenrod;
+      }
+
+      .resume p {
+        font-size: 1.1em;
+        color: #333;
+      }
+
+      .resume strong {
+        color: #2d3e50;
+      }
+
+      /* Add responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+        }
+
+        table td {
+          padding: 8px;
+        }
+
+        button[name="save"],
+        button[name="cancel"] {
+          width: 100%;
+          margin: 5px 0;
+        }
+      }
+    </style>
+    <script src="js/jquery-3.7.1..js"></script>
+    <script>
+      $(document).ready(function () {
+        // Fungsi untuk memvalidasi Nomor Identitas
+        function validateNomorIdentitas() {
+          const nomorIdentitas = $("#nomor_id").val();
+          const errorElement = $("#error_nomor_id");
+          if (nomorIdentitas.length !== 16) {
+            errorElement.show();
+            return false;
+          } else {
+            errorElement.hide();
+            return true;
+          }
+        }
+
+        // Fungsi untuk mengupdate harga berdasarkan tipe kamar
+        function updateHarga() {
+          const kamar = $('select[name="kamar"]').val();
+          const prices = { std: 300000, dlx: 500000, fam: 700000 };
+          $("#harga").val(prices[kamar] || "");
+          calculateTotal(); // Menghitung total ketika tipe kamar berubah
+        }
+
+        // Fungsi untuk menghitung total bayar
+        function calculateTotal() {
+          const harga = parseInt($("#harga").val()) || 0;
+          const hari = parseInt($("#hari").val()) || 0;
+          const breakfast = $("#sarapan").is(":checked") ? 80000 : 0;
+
+          let total = harga * hari;
+          if (hari > 3) {
+            total *= 0.9; // diskon 10% untuk lebih dari 3 hari
+          }
+          total += breakfast;
+
+          $("#total").val(total); // Menampilkan total bayar
+        }
+
+        // Fungsi untuk menampilkan resume
+        function displayResume(event) {
+          event.preventDefault();
+
+          const nama = $("#nama").val();
+          const nomorId = $("#nomor_id").val();
+          const gender = $('input[name="gender"]:checked').val();
+          const kamar = $('select[name="kamar"]').val();
+          const harga = $("#harga").val();
+          const hari = $("#hari").val();
+          const sarapan = $("#sarapan").is(":checked") ? "Ya" : "Tidak";
+          const total = $("#total").val();
+
+          const discount = hari > 3 ? "Diskon 10%" : "Tidak Ada Diskon";
+
+          const resumeHTML = `
+            <h2>Resume Pemesanan</h2>
+            <div class="resume">
+              <p><strong>Nama Pemesan :</strong> ${nama}</p>
+              <p><strong>Nomor Identitas:</strong> ${nomorId}</p>
+              <p><strong>Jenis Kelamin  :</strong> ${gender}</p>
+              <p><strong>Tipe Kamar     :</strong> ${kamar}</p>
+              <p><strong>Durasi Menginap:</strong> ${hari} Hari</p>
+              <p><strong>Breakfast      :</strong> ${sarapan}</p>
+              <p><strong>Diskon         :</strong> ${discount}</p>
+              <p><strong>Total Bayar    :</strong> Rp ${total}</p>
+            </div>
+          `;
+
+          $("#resume").html(resumeHTML);
+        }
+
+        // Event listeners
+        $("#nomor_id").on("input", validateNomorIdentitas);
+        $('select[name="kamar"]').on("change", updateHarga);
+        $("#hari, #sarapan").on("change", calculateTotal);
+        $('button[name="save"]').on("click", displayResume);
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Form Pemesanan</h1>
+    <div class="container">
+      <form method="get" action="tugas1.html">
+        <table border="0">
+          <tr>
+            <td><label for="id">Id Pemesanan</label></td>
+            <td><input type="number" id="id" name="id" required /></td>
+          </tr>
+          <tr>
+            <td><label for="nama">Nama Pemesan</label></td>
+            <td>
+              <input
+                type="text"
+                id="nama"
+                name="nama"
+                maxlength="35"
+                required
+              />
+            </td>
+          </tr>
+          <tr>
+            <td><label for="gender">Jenis Kelamin</label></td>
+            <td>
+              <input
+                type="radio"
+                id="laki"
+                name="gender"
+                value="Laki-laki"
+                required
+              />
+              <label for="laki">Laki-laki</label>
+              <input
+                type="radio"
+                id="perempuan"
+                name="gender"
+                value="Perempuan"
+                required
+              />
+              <label for="perempuan">Perempuan</label>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="nomor_id">Nomor Identitas</label></td>
+            <td>
+              <input type="number" id="nomor_id" name="nomor_id" required />
+              <div id="error_nomor_id" class="error">
+                Isian salah, harus 16 digit
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="kamar">Tipe Kamar</label></td>
+            <td>
+              <select name="kamar" required>
+                <option value="" selected>--Pilih Salah Satu--</option>
+                <option value="std">Standard</option>
+                <option value="dlx">Deluxe</option>
+                <option value="fam">Family</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="harga">Harga</label></td>
+            <td><input type="text" id="harga" name="harga" readonly /></td>
+          </tr>
+          <tr>
+            <td><label for="tgl_pesan">Tanggal Pesan</label></td>
+            <td>
+              <input type="date" id="tgl_pesan" name="tgl_pesan" required />
+            </td>
+          </tr>
+          <tr>
+            <td><label for="hari">Durasi Menginap (hari)</label></td>
+            <td><input type="number" id="hari" name="hari" required /></td>
+          </tr>
+          <tr>
+            <td><label for="sarapan">Sarapan</label></td>
+            <td>
+              <input type="checkbox" id="sarapan" name="sarapan" />
+            </td>
+          </tr>
+          <tr>
+            <td><label for="total">Total Bayar</label></td>
+            <td><input type="text" id="total" name="total" readonly /></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button type="submit" name="save">Simpan</button>
+              <button type="submit" name="cancel">Batal</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+      <div id="resume"></div>
+    </div>
+  </body>
+</html>

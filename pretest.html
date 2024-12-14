@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menampilkan dan Menyembunyikan Gambar</title>
+    <!-- Menyertakan pustaka jQuery -->
+    <script src="js/jquery-3.7.1..js"></script>
+    <script>
+      $(document).ready(function () {
+        // Saat tombol dengan id 'tampil' diklik, gambar dengan id 'gambar' akan ditampilkan
+        $("#tampil").click(function () {
+          $("#gambar").show(); // Menampilkan gambar
+        });
+        // Saat tombol dengan id 'sembunyi' diklik, gambar dengan id 'gambar' akan disembunyikan
+        $("#sembunyi").click(function () {
+          $("#gambar").hide(); // Menyembunyikan gambar
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h2>Demo Menampilkan dan Menyembunyikan Gambar</h2>
+
+    <!-- Tombol untuk menampilkan gambar -->
+    <button id="tampil">Tampilkan Gambar</button>
+
+    <!-- Tombol untuk menyembunyikan gambar -->
+    <button id="sembunyi">Sembunyikan Gambar</button>
+
+    <!-- Gambar yang akan ditampilkan atau disembunyikan -->
+    <img
+      id="gambar"
+      src="gambar/logo_prodi_TI.png"
+      alt="Gambar Logo Prodi TI"
+      style="display: none"
+    />
+  </body>
+</html>
